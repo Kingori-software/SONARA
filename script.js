@@ -755,3 +755,765 @@ let searchQuery = '';
 let selectedSong = null;
 
 // ===========
+// ============================================================
+// SONORA — APPLICATION LOGIC
+// Everything below this point handles rendering and interaction
+// ============================================================
+
+// ============================================================
+// DOM REFERENCES
+// ============================================================
+
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
+
+const views = {
+    home: $('#view-home'),
+    category: $('#view-category'),
+    favorites: $('#view-favorites'),
+    search: $('#view-search')
+};
+
+const categoryGrid = $('#categoryGrid');
+const songGrid = $('#songGrid');
+const favGrid = $('#favGrid');
+const searchGrid = $('#searchGrid');
+
+const globalSearch = $('#globalSearch');
+const sortSelect = $('#sortSelect');
+const backHomeBtn = $('#backHomeBtn');
+const favCount = $('#favCount');
+
+const totalCategoriesEl = $('#totalCategories');
+const totalSongsEl = $('#totalSongs');
+
+const catEmoji = $('#catEmoji');
+const catTitle = $('#catTitle');
+const catDesc = $('#catDesc');
+
+const modalOverlay = $('#modalOverlay');
+const modalCloseBtn = $('#modalCloseBtn');
+const modalEmoji = $('#modalEmoji');
+const modalTitle = $('#modalTitle');
+const modalArtist = $('#modalArtist');
+const modalGenre = $('#modalGenre');
+const modalCategories = $('#modalCategories');
+const modalMoods = $('#modalMoods');
+const modalRating = $('#modalRating');
+const modalDate = $('#modalDate');
+const modalNotes = $('#modalNotes');
+const modalFavBtn = $('#modalFavBtn');
+
+
+// ============================================================
+// CATEGORY HELPERS
+// ============================================================
+
+function getCategory(id) {
+    return CATEGORIES.find(category => category.id === id);
+}
+
+function getCategoryColor(id) {
+    const category = getCategory(id);
+    return category ? category.color : '#818cf8';
+}
+
+function getCategoryName(id) {
+    const category = getCategory(id);
+    return category ? category.name : id;
+}
+
+function getCategoryEmoji(id) {
+    const category = getCategory(id);
+    return category ? category.emoji : '🎵';
+}
+
+
+// ============================================================
+// FAVORITES
+// ============================================================
+
+function isFavorite(song) {
+    return favorites.some(
+        favorite =>
+            favorite.title === song.title &&
+            favorite.artist === song.artist
+    );
+}
+
+function saveFavorites() {
+    localStorage.setItem(
+        'sonora_favorites',
+        JSON.stringify(favorites)
+    );
+}
+
+function updateFavoriteCount() {
+    favCount.textContent = favorites.length;
+}
+
+function toggleFavorite(song) {
+
+    const existingIndex = favorites.findIndex(
+        favorite =>
+            favorite.title === song.title &&
+            favorite.artist === song.artist
+    );
+
+    if (existingIndex !== -1) {
+        favorites.splice(existingIndex, 1);
+    } else {
+        favorites.push(song);
+    }
+
+    saveFavorites();
+    updateFavoriteCount();
+
+    // Re-render current content
+    if (currentView === 'category') {
+        renderCategorySongs();
+    }
+
+    if (currentView === 'favorites') {
+        renderFavorites();
+    }
+
+    if (currentView === 'search') {
+        renderSearchResults();
+    }
+
+    // Update modal button if modal is open
+    if (selectedSong) {
+        updateModalFavoriteButton();
+    }
+}
+
+
+// ============================================================
+// ESCAPE HTML
+// Prevents broken HTML when song data contains special chars
+// ============================================================
+
+function escapeHTML(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+
+// ============================================================
+// CATEGORY CARDS
+// ============================================================
+
+function renderCategories() {
+
+    categoryGrid.innerHTML = '';
+
+    CATEGORIES.forEach(category => {
+
+        const songs = categorySongMap[category.id] || [];
+
+        const card = document.createElement('div');
+
+        card.className = 'category-card';
+
+        card.innerHTML = `
+            <div
+                class="accent-line"
+                style="background:${category.color};"
+            ></div>
+
+            <span class="cat-emoji">${category.emoji}</span>
+
+            <div class="cat-name">
+                ${escapeHTML(category.name)}
+            </div>
+
+            <div class="cat-desc">
+                ${escapeHTML(category.desc)}
+            </div>
+
+            <div class="cat-meta">
+
+                <span class="cat-count">
+                    <i class="fas fa-music"></i>
+                    ${songs.length} song${songs.length === 1 ? '' : 's'}
+                </span>
+
+                <span
+                    class="cat-accent"
+                    style="background:${category.color};"
+                ></span>
+
+            </div>
+        `;
+
+        card.addEventListener('click', () => {
+            openCategory(category.id);
+        });
+
+        categoryGrid.appendChild(card);
+    });
+}
+
+
+// ============================================================
+// OPEN CATEGORY
+// ============================================================
+
+function openCategory(categoryId) {
+
+    const category = getCategory(categoryId);
+
+    if (!category) return;
+
+    currentCategoryId = categoryId;
+    currentView = 'category';
+
+    catEmoji.textContent = category.emoji;
+    catTitle.textContent = category.name;
+    catDesc.textContent = category.desc;
+
+    showView('category');
+
+    renderCategorySongs();
+}
+
+
+// ============================================================
+// SORT SONGS
+// ============================================================
+
+function sortSongs(songs) {
+
+    const sorted = [...songs];
+
+    if (currentSort === 'rating') {
+
+        sorted.sort(
+            (a, b) => Number(b.rating) - Number(a.rating)
+        );
+
+    } else if (currentSort === 'recent') {
+
+        sorted.sort(
+            (a, b) =>
+                new Date(b.dateAdded) -
+                new Date(a.dateAdded)
+        );
+
+    } else if (currentSort === 'az') {
+
+        sorted.sort(
+            (a, b) =>
+                a.title.localeCompare(b.title)
+        );
+    }
+
+    return sorted;
+}
+
+
+// ============================================================
+// SONG CARD
+// ============================================================
+
+function createSongCard(song) {
+
+    const card = document.createElement('div');
+
+    card.className = 'song-card';
+
+    const favorite = isFavorite(song);
+
+    const moodsHTML = (song.moods || [])
+        .map(
+            mood =>
+                `<span class="mood-tag">${escapeHTML(mood)}</span>`
+        )
+        .join('');
+
+    card.innerHTML = `
+
+        <div class="song-title">
+            ${escapeHTML(song.title)}
+        </div>
+
+        <div class="song-artist">
+            ${escapeHTML(song.artist)}
+        </div>
+
+        <span class="song-genre">
+            ${escapeHTML(song.genre)}
+        </span>
+
+        <div class="song-moods">
+            ${moodsHTML}
+        </div>
+
+        <div class="song-footer">
+
+            <span class="song-rating">
+                <i class="fas fa-star"></i>
+                ${Number(song.rating).toFixed(1)}
+            </span>
+
+            <button
+                class="fav-btn ${favorite ? 'active' : ''}"
+                aria-label="Favorite"
+            >
+                <i class="fas fa-heart"></i>
+            </button>
+
+        </div>
+    `;
+
+    // Clicking card opens modal
+    card.addEventListener('click', event => {
+
+        if (event.target.closest('.fav-btn')) {
+            return;
+        }
+
+        openSongModal(song);
+    });
+
+    // Favorite button
+    const favButton = card.querySelector('.fav-btn');
+
+    favButton.addEventListener('click', event => {
+
+        event.stopPropagation();
+
+        toggleFavorite(song);
+    });
+
+    return card;
+}
+
+
+// ============================================================
+// RENDER SONGS IN CATEGORY
+// ============================================================
+
+function renderCategorySongs() {
+
+    songGrid.innerHTML = '';
+
+    if (!currentCategoryId) return;
+
+    const songs =
+        categorySongMap[currentCategoryId] || [];
+
+    const sortedSongs = sortSongs(songs);
+
+    if (sortedSongs.length === 0) {
+
+        songGrid.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-music"></i>
+                <h3>No songs yet</h3>
+                <p>This category doesn't have any songs.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    sortedSongs.forEach(song => {
+
+        songGrid.appendChild(
+            createSongCard(song)
+        );
+
+    });
+}
+
+
+// ============================================================
+// FAVORITES PAGE
+// ============================================================
+
+function renderFavorites() {
+
+    favGrid.innerHTML = '';
+
+    if (favorites.length === 0) {
+
+        favGrid.innerHTML = `
+            <div class="empty-state">
+
+                <i class="far fa-heart"></i>
+
+                <h3>No favorites yet</h3>
+
+                <p>
+                    Click the heart on a song to save it here.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    favorites.forEach(song => {
+
+        favGrid.appendChild(
+            createSongCard(song)
+        );
+
+    });
+}
+
+
+// ============================================================
+// SEARCH
+// ============================================================
+
+function renderSearchResults() {
+
+    searchGrid.innerHTML = '';
+
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) return;
+
+    const results = SONG_POOL.filter(song => {
+
+        const searchableText = [
+
+            song.title,
+            song.artist,
+            song.genre,
+            ...(song.moods || []),
+            ...(song.categories || [])
+                .map(id => getCategoryName(id))
+
+        ]
+            .join(' ')
+            .toLowerCase();
+
+        return searchableText.includes(query);
+    });
+
+    $('#searchResultInfo').textContent =
+        `${results.length} song${results.length === 1 ? '' : 's'} found`;
+
+    if (results.length === 0) {
+
+        searchGrid.innerHTML = `
+            <div class="empty-state">
+
+                <i class="fas fa-search"></i>
+
+                <h3>No songs found</h3>
+
+                <p>
+                    Try searching for another song, artist, mood or category.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    results.forEach(song => {
+
+        searchGrid.appendChild(
+            createSongCard(song)
+        );
+
+    });
+}
+
+
+// ============================================================
+// SHOW VIEW
+// ============================================================
+
+function showView(viewName) {
+
+    Object.values(views).forEach(view => {
+
+        if (view) {
+            view.classList.remove('active');
+        }
+
+    });
+
+    if (views[viewName]) {
+        views[viewName].classList.add('active');
+    }
+
+    // Navigation active state
+    $$('.nav-link').forEach(button => {
+
+        button.classList.toggle(
+            'active',
+            button.dataset.view === viewName
+        );
+
+    });
+}
+
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+
+$$('.nav-link').forEach(button => {
+
+    button.addEventListener('click', () => {
+
+        const view = button.dataset.view;
+
+        if (view === 'home') {
+
+            currentView = 'home';
+            currentCategoryId = null;
+
+            showView('home');
+
+        }
+
+        else if (view === 'categories') {
+
+            // Categories button returns to category selection
+            currentView = 'home';
+            currentCategoryId = null;
+
+            showView('home');
+
+        }
+
+        else if (view === 'favorites') {
+
+            currentView = 'favorites';
+
+            showView('favorites');
+
+            renderFavorites();
+
+        }
+
+    });
+
+});
+
+
+// ============================================================
+// BACK BUTTON
+// ============================================================
+
+backHomeBtn.addEventListener('click', () => {
+
+    currentView = 'home';
+    currentCategoryId = null;
+
+    showView('home');
+
+});
+
+
+// ============================================================
+// SORT
+// ============================================================
+
+sortSelect.addEventListener('change', () => {
+
+    currentSort = sortSelect.value;
+
+    renderCategorySongs();
+
+});
+
+
+// ============================================================
+// SEARCH INPUT
+// ============================================================
+
+globalSearch.addEventListener('input', () => {
+
+    searchQuery = globalSearch.value;
+
+    if (!searchQuery.trim()) {
+
+        currentView = 'home';
+
+        showView('home');
+
+        return;
+    }
+
+    currentView = 'search';
+
+    showView('search');
+
+    renderSearchResults();
+
+});
+
+
+// ============================================================
+// MODAL
+// ============================================================
+
+function openSongModal(song) {
+
+    selectedSong = song;
+
+    modalEmoji.textContent =
+        getCategoryEmoji(song.categories?.[0]);
+
+    modalTitle.textContent =
+        song.title;
+
+    modalArtist.textContent =
+        song.artist;
+
+    modalGenre.textContent =
+        song.genre;
+
+    modalCategories.textContent =
+        (song.categories || [])
+            .map(getCategoryName)
+            .join(', ');
+
+    modalMoods.innerHTML =
+        (song.moods || [])
+            .map(
+                mood =>
+                    `<span class="mood-tag">${escapeHTML(mood)}</span>`
+            )
+            .join('');
+
+    modalRating.textContent =
+        `${Number(song.rating).toFixed(1)} / 10`;
+
+    modalDate.textContent =
+        song.dateAdded || '—';
+
+    modalNotes.innerHTML =
+        `<strong>Notes:</strong> ${escapeHTML(song.notes || 'No personal notes yet.')}`;
+
+    updateModalFavoriteButton();
+
+    modalOverlay.classList.add('open');
+
+    document.body.style.overflow = 'hidden';
+}
+
+
+// ============================================================
+// MODAL FAVORITE BUTTON
+// ============================================================
+
+function updateModalFavoriteButton() {
+
+    if (!selectedSong) return;
+
+    const favorite = isFavorite(selectedSong);
+
+    modalFavBtn.classList.toggle(
+        'active',
+        favorite
+    );
+
+    modalFavBtn.innerHTML = favorite
+        ? `<i class="fas fa-heart"></i> Remove from Favorites`
+        : `<i class="fas fa-heart"></i> Add to Favorites`;
+}
+
+
+modalFavBtn.addEventListener('click', () => {
+
+    if (!selectedSong) return;
+
+    toggleFavorite(selectedSong);
+
+    updateModalFavoriteButton();
+
+});
+
+
+// ============================================================
+// CLOSE MODAL
+// ============================================================
+
+function closeModal() {
+
+    modalOverlay.classList.remove('open');
+
+    document.body.style.overflow = '';
+
+    selectedSong = null;
+}
+
+modalCloseBtn.addEventListener(
+    'click',
+    closeModal
+);
+
+
+// Close by clicking outside modal
+modalOverlay.addEventListener('click', event => {
+
+    if (event.target === modalOverlay) {
+        closeModal();
+    }
+
+});
+
+
+// Close with Escape
+document.addEventListener('keydown', event => {
+
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+
+});
+
+
+// ============================================================
+// TOTALS
+// ============================================================
+
+function updateTotals() {
+
+    totalCategoriesEl.textContent =
+        CATEGORIES.length;
+
+    totalSongsEl.textContent =
+        SONG_POOL.length;
+
+}
+
+
+// ============================================================
+// INITIALIZE APP
+// ============================================================
+
+function init() {
+
+    renderCategories();
+
+    updateTotals();
+
+    updateFavoriteCount();
+
+    showView('home');
+
+    console.log(
+        `SONORA loaded: ${SONG_POOL.length} songs, ${CATEGORIES.length} categories`
+    );
+}
+
+
+// START APPLICATION
+init();
