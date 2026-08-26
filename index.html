@@ -1,7 +1,3 @@
-<!-- ============================================================
-     index.html
-     SONORA — Main HTML structure
-     ============================================================ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,103 +6,1201 @@
     <title>SONORA — Find the right sound</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* ============================================================
+           SONORA — Complete styles (inlined)
+           ============================================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0b0d0f;
+            --bg-secondary: #12161a;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --bg-glass: rgba(255, 255, 255, 0.06);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-primary: #f0f2f5;
+            --text-secondary: #a8b2c0;
+            --text-muted: #6b7a8a;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.7);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ===== GLASSMORPHISM UTILITY ===== */
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px) saturate(1.2);
+            -webkit-backdrop-filter: blur(16px) saturate(1.2);
+            border: 1px solid var(--border-glass);
+        }
+
+        /* ===== LAYOUT ===== */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px 48px;
+        }
+
+        /* ===== HEADER / NAV ===== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0 12px;
+            flex-wrap: wrap;
+            gap: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 32px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c084fc, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #f0f2f5 60%, #a8b2c0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-link.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.10);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-link .badge {
+            background: rgba(255, 255, 255, 0.10);
+            padding: 1px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* ===== SEARCH BAR ===== */
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+            max-width: 420px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px 10px 44px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+        .search-input:focus {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.03);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 16px 0 28px;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #f0f2f5 50%, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 18px;
+            font-weight: 400;
+            margin-top: 4px;
+        }
+
+        /* ===== VIEWS ===== */
+        .view {
+            display: none;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== CATEGORY GRID ===== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 24px 22px 22px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            position: relative;
+            overflow: hidden;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-md);
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 60%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .category-card .cat-emoji {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .category-card .cat-name {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            margin-bottom: 2px;
+        }
+
+        .category-card .cat-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex: 1;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .category-card .cat-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding-top: 14px;
+        }
+
+        .category-card .cat-count {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .category-card .cat-accent {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.06);
+        }
+
+        .category-card .accent-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            opacity: 0.7;
+        }
+
+        /* ===== CATEGORY PAGE ===== */
+        .category-header {
+            padding: 8px 0 20px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .category-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .category-header-left .big-emoji {
+            font-size: 44px;
+        }
+
+        .category-header-left .cat-title {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .category-header-left .cat-sub {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .category-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .sort-select {
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .sort-select:hover,
+        .sort-select:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.10);
+        }
+
+        .sort-select option {
+            background: #1a1f24;
+            color: #f0f2f5;
+        }
+
+        .btn-back {
+            padding: 8px 18px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+
+        /* ===== SONG GRID ===== */
+        .song-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 4px;
+        }
+
+        .song-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 20px 22px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .song-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.07);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .song-card .song-title {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            margin-bottom: 1px;
+        }
+
+        .song-card .song-artist {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .song-card .song-genre {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 2px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        .song-card .song-moods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .song-card .mood-tag {
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .song-card .song-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .song-card .song-rating {
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .song-card .song-rating i {
+            color: #fbbf24;
+            font-size: 13px;
+        }
+
+        .song-card .fav-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 4px;
+        }
+
+        .song-card .fav-btn:hover {
+            color: #f472b6;
+            transform: scale(1.1);
+        }
+
+        .song-card .fav-btn.active {
+            color: #f472b6;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 24px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            max-width: 540px;
+            width: 100%;
+            padding: 36px 36px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 22px;
+            cursor: pointer;
+            float: right;
+            transition: var(--transition);
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .modal .modal-emoji {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .modal .modal-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .modal .modal-artist {
+            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .modal .modal-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .modal .modal-detail-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .modal .modal-label {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .modal .modal-value {
+            font-weight: 500;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .modal .modal-moods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        .modal .modal-moods .mood-tag {
+            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .modal .modal-notes {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            border-left: 3px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .modal .modal-notes strong {
+            color: var(--text-primary);
+        }
+
+        .modal .modal-fav-btn {
+            margin-top: 18px;
+            padding: 10px 24px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .modal .modal-fav-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .modal .modal-fav-btn.active {
+            background: rgba(244, 114, 182, 0.15);
+            border-color: rgba(244, 114, 182, 0.2);
+            color: #f472b6;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 0 16px 32px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .logo-area {
+                justify-content: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .search-wrapper {
+                max-width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+            .hero p {
+                font-size: 16px;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 14px;
+            }
+
+            .category-card {
+                padding: 18px 16px 16px;
+                min-height: 130px;
+            }
+            .category-card .cat-emoji {
+                font-size: 26px;
+            }
+            .category-card .cat-name {
+                font-size: 16px;
+            }
+            .category-card .cat-desc {
+                font-size: 12px;
+            }
+
+            .song-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .category-header-left .cat-title {
+                font-size: 26px;
+            }
+            .category-header-left .big-emoji {
+                font-size: 36px;
+            }
+
+            .category-controls {
+                justify-content: stretch;
+            }
+            .category-controls .sort-select {
+                flex: 1;
+            }
+
+            .modal {
+                padding: 24px 20px;
+                margin: 12px;
+            }
+            .modal .modal-title {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .category-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .category-card {
+                padding: 14px 12px 12px;
+                min-height: 110px;
+            }
+            .category-card .cat-emoji {
+                font-size: 22px;
+            }
+            .category-card .cat-name {
+                font-size: 14px;
+            }
+            .category-card .cat-desc {
+                font-size: 11px;
+                display: none;
+            }
+            .category-card .cat-meta {
+                font-size: 11px;
+                padding-top: 10px;
+                margin-top: 10px;
+            }
+            .nav-link {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .nav-link .badge {
+                font-size: 10px;
+                padding: 0 8px;
+            }
+        }
+
+        /* ===== MISC ===== */
+        .text-accent {
+            color: #818cf8;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .song-count-badge {
+            font-size: 13px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 2px 14px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
+// ============================================================
+//  DATA: CATEGORIES
+// ============================================================
+const CATEGORIES = [
+    { id: 'love', name: 'Love & Romance', emoji: '💜', color: '#a78bfa',
+    desc: 'Songs about love, romance, attraction and relationships.' },
+    { id: 'heartbreak', name: 'Heartbreak', emoji: '💙', color: '#60a5fa',
+        desc: 'Songs about heartbreak, separation and emotional pain.' },
+    { id: 'latenight', name: 'Late Night', emoji: '🌌', color: '#4f46e5',
+        desc: 'Songs that fit quiet nights, deep thoughts and nighttime vibes.' },
+    { id: 'chill', name: 'Chill & Vibes', emoji: '🩵', color: '#2dd4bf',
+        desc: 'Relaxed, smooth and easy-listening songs.' },
+    { id: 'hype', name: 'Hype & Energy', emoji: '❤️‍🔥', color: '#f87171',
+        desc: 'High-energy songs for excitement, confidence and adrenaline.' },
+    { id: 'happy', name: 'Happy & Feel-Good', emoji: '💛', color: '#fbbf24',
+        desc: 'Positive, joyful and uplifting songs.' },
+    { id: 'motivation', name: 'Motivation & Grind', emoji: '💚', color: '#34d399',
+        desc: 'Songs about ambition, discipline, growth and chasing goals.' },
+    { id: 'rap', name: 'Rap & Hip-Hop', emoji: '🖤', color: '#9ca3af', desc: 'Rap, hip-hop and lyrical tracks.' },
+    { id: 'rnsoul', name: 'R&B & Soul', emoji: '🩷', color: '#f472b6',
+        desc: 'Smooth R&B, soul and emotional vocal tracks.' },
+    { id: 'afrobeat', name: 'Afrobeat & Afropop', emoji: '💚', color: '#059669',
+        desc: 'Afrobeat, Afropop and African-inspired sounds.' },
+    { id: 'worship', name: 'Worship & Spiritual', emoji: '🤍', color: '#e5e7eb',
+        desc: 'Worship, gospel and spiritually themed songs.' },
+    { id: 'deep', name: 'Deep & Thoughtful', emoji: '💭', color: '#6366f1',
+        desc: 'Songs with meaningful lyrics, deep messages and introspective themes.' },
+    { id: 'victory', name: 'Victory & Winning', emoji: '🏆', color: '#f59e0b',
+        desc: 'Songs that create a feeling of achievement, success and triumph.' },
+    { id: 'flirty', name: 'Flirty & Attraction', emoji: '🩷', color: '#ec4899',
+        desc: 'Playful, charming and attraction-themed songs.' },
+    { id: 'melancholy', name: 'Melancholy', emoji: '🌧️', color: '#94a3b8',
+        desc: 'Calm, bittersweet and emotionally reflective songs.' },
+    { id: 'nostalgia', name: 'Nostalgia & Classics', emoji: '🤎', color: '#a78a7a',
+        desc: 'Older songs and tracks that create a nostalgic feeling.' },
+    { id: 'peaceful', name: 'Peaceful & Relaxing', emoji: '🌿', color: '#6ee7b7',
+        desc: 'Calm songs for relaxation, studying and peaceful moments.' },
+    { id: 'ambition', name: 'Ambition', emoji: '🚀', color: '#fb923c',
+        desc: 'Songs that inspire confidence, ambition and forward movement.' },
+    { id: 'dance', name: 'Dance & Party', emoji: '💃', color: '#d946ef',
+        desc: 'Songs made for dancing, parties and celebrations.' },
+    { id: 'cinematic', name: 'Cinematic & Epic', emoji: '🎬', color: '#8b5cf6',
+        desc: 'Dramatic, powerful and cinematic-feeling songs.' },
+];
 
-    <div class="app-container" id="app">
+// ============================================================
+//  DATA: SONGS (edit this array to change your library)
+// ============================================================
+const SONG_POOL = [
+    { title: 'Perfect', artist: 'Ed Sheeran', genre: 'R&B / Pop', moods: ['💜 Love', '🌌 Late Night'],
+        rating: 9.2, notes: 'One of the most romantic songs of all time.', categories: ['love', 'latenight'],
+        dateAdded: '2025-02-10' },
+    { title: 'Adore You', artist: 'Harry Styles', genre: 'Pop / Rock', moods: ['💜 Love', '💛 Happy'],
+        rating: 8.3, notes: 'A sweet and uplifting love track.', categories: ['love', 'happy'],
+        dateAdded: '2025-01-22' },
+    { title: 'Golden Hour', artist: 'JVKE', genre: 'Pop / R&B', moods: ['💜 Love', '🌿 Peaceful'], rating: 8.5,
+        notes: 'A beautiful, atmospheric love song.', categories: ['love', 'peaceful'], dateAdded: '2025-03-01' },
+    { title: 'Leave The Door Open', artist: 'Silk Sonic', genre: 'R&B / Soul', moods: ['💜 Love', '🩵 Chill'],
+        rating: 8.7, notes: 'Smooth, seductive, and timeless.', categories: ['love', 'chill', 'rnsoul'],
+        dateAdded: '2024-12-15' },
+    { title: 'Positions', artist: 'Ariana Grande', genre: 'Pop / R&B', moods: ['💜 Love', '🩵 Chill'],
+        rating: 8.0, notes: 'Smooth and romantic.', categories: ['love', 'chill', 'rnsoul'],
+        dateAdded: '2025-01-05' },
+    { title: 'Stay', artist: 'Rihanna ft. Mikky Ekko', genre: 'Pop / R&B', moods: ['💙 Heartbreak',
+            '🌧️ Melancholy'
+        ], rating: 8.7, notes: 'Emotional and vulnerable.', categories: ['heartbreak', 'melancholy'],
+        dateAdded: '2024-11-20' },
+    { title: 'Before You Go', artist: 'Lewis Capaldi', genre: 'Pop / Ballad', moods: ['💙 Heartbreak',
+            '🌧️ Melancholy'
+        ], rating: 8.9, notes: 'Powerful and heartbreaking.', categories: ['heartbreak', 'melancholy'],
+        dateAdded: '2025-01-30' },
+    { title: "drivers license", artist: 'Olivia Rodrigo', genre: 'Pop / Ballad', moods: ['💙 Heartbreak',
+            '🌧️ Melancholy'
+        ], rating: 8.6, notes: 'A raw coming-of-age heartbreak anthem.', categories: ['heartbreak',
+            'melancholy'
+        ], dateAdded: '2024-12-01' },
+    { title: 'Heartbreak Anniversary', artist: 'Giveon', genre: 'R&B / Soul', moods: ['💙 Heartbreak',
+            '🌧️ Melancholy'
+        ], rating: 8.7, notes: 'Smooth and deeply emotional.', categories: ['heartbreak', 'melancholy',
+            'rnsoul'
+        ], dateAdded: '2025-02-14' },
+    { title: 'My Heart Will Go On', artist: 'Celine Dion', genre: 'Pop / Ballad', moods: ['💙 Heartbreak',
+            '🎬 Cinematic'
+        ], rating: 9.1, notes: 'A timeless cinematic love theme.', categories: ['heartbreak', 'cinematic',
+            'nostalgia'
+        ], dateAdded: '2024-10-10' },
+    { title: 'Blinding Lights', artist: 'The Weeknd', genre: 'Synthwave / Pop', moods: ['🌌 Late Night',
+            '❤️‍🔥 Hype'
+        ], rating: 9.0, notes: 'Perfect for late-night drives.', categories: ['latenight', 'hype'],
+        dateAdded: '2025-02-20' },
+    { title: 'Redbone', artist: 'Childish Gambino', genre: 'R&B / Funk', moods: ['🩵 Chill', '🌌 Late Night'],
+        rating: 8.9, notes: 'Smooth, funky, and hypnotic.', categories: ['chill', 'latenight', 'rnsoul'],
+        dateAdded: '2024-12-28' },
+    { title: 'Nights', artist: 'Frank Ocean', genre: 'R&B / Experimental', moods: ['🌌 Late Night', '💭 Deep'],
+        rating: 9.1, notes: 'A late-night journey through emotion.', categories: ['latenight', 'deep',
+            'rnsoul'
+        ], dateAdded: '2025-01-18' },
+    { title: 'Starboy', artist: 'The Weeknd', genre: 'R&B / Pop', moods: ['🌌 Late Night', '❤️‍🔥 Hype'],
+        rating: 8.7, notes: 'Sleek, dark, and confident.', categories: ['latenight', 'hype', 'rnsoul'],
+        dateAdded: '2025-03-10' },
+    { title: 'Rocket Man', artist: 'Elton John', genre: 'Pop / Rock', moods: ['🌌 Late Night', '💭 Deep'],
+        rating: 8.9, notes: 'A reflective classic.', categories: ['latenight', 'deep', 'nostalgia'],
+        dateAdded: '2024-09-15' },
+    { title: 'Good Days', artist: 'SZA', genre: 'R&B / Soul', moods: ['🌿 Peaceful', '🩵 Chill'], rating: 8.8,
+        notes: 'Soothing and reflective.', categories: ['peaceful', 'chill', 'rnsoul'],
+        dateAdded: '2025-01-12' },
+    { title: 'Essence', artist: 'Wizkid ft. Tems', genre: 'Afrobeat', moods: ['🩵 Chill', '💚 Afrobeat'],
+        rating: 8.9, notes: 'The global Afrobeat anthem.', categories: ['afrobeat', 'chill'],
+        dateAdded: '2024-11-05' },
+    { title: 'Dreams', artist: 'Fleetwood Mac', genre: 'Rock / Pop', moods: ['🤎 Nostalgia', '🩵 Chill'],
+        rating: 9.0, notes: 'Timeless and dreamy.', categories: ['nostalgia', 'chill'],
+        dateAdded: '2024-08-20' },
+    { title: 'Weightless', artist: 'Marconi Union', genre: 'Ambient', moods: ['🌿 Peaceful', '🩵 Chill'],
+        rating: 8.8, notes: 'Scientifically proven to reduce anxiety.', categories: ['peaceful', 'chill'],
+        dateAdded: '2025-02-02' },
+    { title: 'Sicko Mode', artist: 'Travis Scott', genre: 'Hip-Hop / Trap', moods: ['❤️‍🔥 Hype', '🖤 Rap'],
+        rating: 8.6, notes: 'High-energy banger.', categories: ['hype', 'rap'], dateAdded: '2024-12-12' },
+    { title: 'The Box', artist: 'Roddy Ricch', genre: 'Hip-Hop / Trap', moods: ['🖤 Rap', '❤️‍🔥 Hype'],
+        rating: 8.4, notes: 'Hard-hitting and catchy.', categories: ['rap', 'hype'], dateAdded: '2025-01-25' },
+    { title: 'WAP', artist: 'Cardi B ft. Megan Thee Stallion', genre: 'Hip-Hop / Rap', moods: ['❤️‍🔥 Hype',
+            '🩷 Flirty'
+        ], rating: 7.8, notes: 'Bold, unapologetic, and high-energy.', categories: ['hype', 'flirty', 'rap'],
+        dateAdded: '2024-10-05' },
+    { title: 'Industry Baby', artist: 'Lil Nas X ft. Jack Harlow', genre: 'Hip-Hop / Rap',
+        moods: ['❤️‍🔥 Hype', '🏆 Victory'], rating: 8.1, notes: 'Confident and high-energy.',
+        categories: ['hype', 'victory', 'rap'], dateAdded: '2025-02-18' },
+    { title: 'Levitating', artist: 'Dua Lipa', genre: 'Pop / Disco', moods: ['💛 Happy', '💃 Dance'],
+        rating: 8.8, notes: 'Pure energy and joy.', categories: ['happy', 'dance', 'hype'],
+        dateAdded: '2025-01-08' },
+    { title: 'Uptown Funk', artist: 'Mark Ronson ft. Bruno Mars', genre: 'Funk / Pop',
+        moods: ['💛 Happy', '💃 Dance'], rating: 8.7, notes: 'Instant party starter.', categories: ['happy',
+            'dance'
+        ], dateAdded: '2024-09-30' },
+    { title: 'Watermelon Sugar', artist: 'Harry Styles', genre: 'Pop / Funk', moods: ['💛 Happy', '🩷 Flirty'],
+        rating: 8.3, notes: 'Warm, nostalgic, and fun.', categories: ['happy', 'flirty'],
+        dateAdded: '2025-02-28' },
+    { title: 'Boogie Wonderland', artist: 'Earth, Wind & Fire', genre: 'Disco / Funk',
+        moods: ['💛 Happy', '💃 Dance', '🤎 Nostalgia'], rating: 8.7, notes: 'Pure joy from the disco era.',
+        categories: ['happy', 'dance', 'nostalgia'], dateAdded: '2024-07-15' },
+    { title: 'Lose Yourself', artist: 'Eminem', genre: 'Hip-Hop', moods: ['🚀 Ambition', '💚 Motivation'],
+        rating: 9.5, notes: 'The ultimate motivational anthem.', categories: ['motivation', 'ambition', 'rap'],
+        dateAdded: '2024-11-28' },
+    { title: 'Fight Song', artist: 'Rachel Platten', genre: 'Pop', moods: ['💚 Motivation', '🏆 Victory'],
+        rating: 8.1, notes: 'A determined, uplifting track.', categories: ['motivation', 'victory'],
+        dateAdded: '2025-01-15' },
+    { title: 'Unstoppable', artist: 'Sia', genre: 'Pop', moods: ['💚 Motivation', '🚀 Ambition'], rating: 8.4,
+        notes: 'An empowering anthem.', categories: ['motivation', 'ambition'], dateAdded: '2025-02-05' },
+    { title: 'Stronger', artist: 'Kanye West', genre: 'Hip-Hop / Electronic', moods: ['💚 Motivation',
+            '🏆 Victory'
+        ], rating: 8.7, notes: 'A classic workout and motivation track.', categories: ['motivation', 'victory',
+            'rap'
+        ], dateAdded: '2024-12-20' },
+    { title: 'Rap God', artist: 'Eminem', genre: 'Hip-Hop / Rap', moods: ['🖤 Rap', '🚀 Ambition'],
+        rating: 9.2, notes: 'A lyrical masterpiece.', categories: ['rap', 'ambition'],
+        dateAdded: '2024-10-18' },
+    { title: 'No Role Modelz', artist: 'J. Cole', genre: 'Hip-Hop / Rap', moods: ['🖤 Rap', '💭 Deep'],
+        rating: 8.9, notes: 'Introspective and thought-provoking.', categories: ['rap', 'deep'],
+        dateAdded: '2025-01-28' },
+    { title: 'God\'s Plan', artist: 'Drake', genre: 'Hip-Hop / Rap', moods: ['🏆 Victory', '💛 Happy'],
+        rating: 8.4, notes: 'An uplifting anthem about giving back.', categories: ['victory', 'happy', 'rap'],
+        dateAdded: '2024-09-12' },
+    { title: 'Alright', artist: 'Kendrick Lamar', genre: 'Hip-Hop / Rap', moods: ['💭 Deep', '🏆 Victory'],
+        rating: 9.3, notes: 'A powerful anthem of resilience and hope.', categories: ['deep', 'victory', 'rap'],
+        dateAdded: '2025-03-05' },
+    { title: 'Kiss Me More', artist: 'Doja Cat ft. SZA', genre: 'R&B / Pop', moods: ['🩷 Flirty', '💜 Love'],
+        rating: 8.3, notes: 'Playful and seductive.', categories: ['flirty', 'love', 'rnsoul'],
+        dateAdded: '2025-02-12' },
+    { title: 'Peaches', artist: 'Justin Bieber ft. Daniel Caesar, Giveon', genre: 'R&B / Pop',
+        moods: ['💜 Love', '🩵 Chill'], rating: 8.0, notes: 'A chill love song with great harmonies.',
+        categories: ['love', 'chill', 'rnsoul'], dateAdded: '2024-11-02' },
+    { title: 'Jerusalema', artist: 'Master KG ft. Nomcebo', genre: 'Afrobeat / Dance',
+        moods: ['💛 Happy', '💃 Dance', '💚 Afrobeat'], rating: 8.4, notes: 'A global dance sensation.',
+        categories: ['afrobeat', 'dance', 'happy'], dateAdded: '2024-08-08' },
+    { title: 'Rover', artist: 'S1mba ft. DTG', genre: 'Afrobeat / Pop', moods: ['💛 Happy', '💚 Afrobeat'],
+        rating: 7.9, notes: 'Upbeat and infectious.', categories: ['afrobeat', 'happy'],
+        dateAdded: '2025-01-20' },
+    { title: 'Hallelujah', artist: 'Jeff Buckley', genre: 'Rock / Folk', moods: ['🤍 Worship',
+            '🌧️ Melancholy'
+        ], rating: 9.3, notes: 'One of the most beautiful covers ever recorded.', categories: ['worship',
+            'melancholy', 'nostalgia'
+        ], dateAdded: '2024-11-11' },
+    { title: 'Way Maker', artist: 'Sinach', genre: 'Gospel / Worship', moods: ['🤍 Worship', '🌿 Peaceful'],
+        rating: 8.9, notes: 'A modern worship classic.', categories: ['worship', 'peaceful'],
+        dateAdded: '2025-02-25' },
+    { title: 'Rise Up', artist: 'Andra Day', genre: 'Soul / Gospel', moods: ['🚀 Ambition', '🤍 Worship'],
+        rating: 9.0, notes: 'A powerful anthem of resilience.', categories: ['ambition', 'worship', 'rnsoul'],
+        dateAdded: '2024-12-08' },
+    { title: 'Bohemian Rhapsody', artist: 'Queen', genre: 'Rock', moods: ['🎬 Cinematic', '💭 Deep'],
+        rating: 9.8, notes: 'A masterpiece that defies genre.', categories: ['cinematic', 'deep', 'nostalgia'],
+        dateAdded: '2024-07-20' },
+    { title: 'Circle of Life', artist: 'Elton John', genre: 'Pop / Cinematic', moods: ['🎬 Cinematic',
+            '💭 Deep'
+        ], rating: 9.0, notes: 'An epic and spiritual opening.', categories: ['cinematic', 'deep', 'nostalgia'],
+        dateAdded: '2024-06-15' },
+    { title: 'Congratulations', artist: 'Post Malone ft. Quavo', genre: 'Hip-Hop / Pop',
+        moods: ['🏆 Victory', '🚀 Ambition'], rating: 8.5, notes: 'Celebrating success and hustle.',
+        categories: ['victory', 'ambition', 'rap'], dateAdded: '2025-01-02' },
+    { title: 'Hall of Fame', artist: 'The Script ft. will.i.am', genre: 'Pop / Rock',
+        moods: ['🏆 Victory', '🚀 Ambition'], rating: 8.6, notes: 'An anthem for achievers.',
+        categories: ['victory', 'ambition'], dateAdded: '2024-10-25' },
+    { title: 'Run This Town', artist: 'Jay-Z ft. Rihanna, Kanye West', genre: 'Hip-Hop / Rap',
+        moods: ['🏆 Victory', '❤️‍🔥 Hype'], rating: 8.6, notes: 'A bold anthem of dominance.',
+        categories: ['victory', 'hype', 'rap'], dateAdded: '2024-09-05' },
+    { title: 'Montero (Call Me By Your Name)', artist: 'Lil Nas X', genre: 'Pop / Rap',
+        moods: ['🩷 Flirty', '❤️‍🔥 Hype'], rating: 8.2, notes: 'Bold, confident, and unapologetic.',
+        categories: ['flirty', 'hype', 'rap'], dateAdded: '2025-02-08' },
+    { title: 'Counting Stars', artist: 'OneRepublic', genre: 'Pop / Rock', moods: ['🚀 Ambition', '💛 Happy'],
+        rating: 8.2, notes: 'An upbeat track about chasing dreams.', categories: ['ambition', 'happy'],
+        dateAdded: '2024-11-15' },
+    { title: 'The Business', artist: 'Tiësto', genre: 'Dance / Electronic', moods: ['💃 Dance', '❤️‍🔥 Hype'],
+        rating: 7.9, notes: 'High-energy dance track.', categories: ['dance', 'hype'],
+        dateAdded: '2025-01-10' },
+    { title: 'Baba Yetu', artist: 'Christopher Tin', genre: 'Cinematic / Choral', moods: ['🎬 Cinematic',
+            '🤍 Worship'
+        ], rating: 9.1, notes: 'Epic and spiritually moving.', categories: ['cinematic', 'worship'],
+        dateAdded: '2024-12-18' },
+];
 
-        <!-- ===== HEADER ===== -->
-        <header class="header">
-            <div class="logo-area">
-                <span class="logo-icon">♫</span>
-                <span class="logo-text">SONORA</span>
-            </div>
+// ============================================================
+//  BUILD CATEGORY MAP
+// ============================================================
+const categorySongMap = {};
+CATEGORIES.forEach(c => categorySongMap[c.id] = []);
+SONG_POOL.forEach(song => {
+    song.categories.forEach(catId => {
+        if (categorySongMap[catId]) categorySongMap[catId].push(song);
+    });
+});
+CATEGORIES.forEach(c => {
+    if (categorySongMap[c.id].length === 0) {
+        const fallback = {
+            title: `${c.emoji} ${c.name} Anthem`,
+            artist: 'Various Artists',
+            genre: 'Pop',
+            moods: [c.emoji + ' ' + c.name],
+            rating: 7.5,
+            notes: `A representative track for ${c.name}.`,
+            categories: [c.id],
+            dateAdded: new Date().toISOString().split('T')[0],
+        };
+        categorySongMap[c.id].push(fallback);
+        SONG_POOL.push(fallback);
+    }
+});
 
-            <nav class="nav-links">
-                <button class="nav-link active" data-view="home"><i class="fas fa-home"></i> Home</button>
-                <button class="nav-link" data-view="categories"><i class="fas fa-th-large"></i> Categories</button>
-                <button class="nav-link" data-view="favorites"><i class="fas fa-heart"></i> Favorites <span class="badge" id="favCount">0</span></button>
-            </nav>
+// ============================================================
+//  STATE
+// ============================================================
+let favorites = JSON.parse(localStorage.getItem('sonora_favorites') || '[]');
+let currentView = 'home';
+let currentCategoryId = null;
+let currentSort = 'rating';
+let searchQuery = '';
 
-            <div class="search-wrapper">
-                <i class="fas fa-search"></i>
-                <input class="search-input" id="globalSearch" type="text" placeholder="Search songs, artists, moods…" />
-            </div>
-        </header>
+// ============================================================
+//  DOM REFS
+// ============================================================
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
 
-        <!-- ===== HERO ===== -->
-        <section class="hero">
-            <h1>Find the right sound for every moment.</h1>
-            <p>Explore <span id="totalCategories">20</span> categories and <span id="totalSongs">0</span> songs curated by mood, theme, and vibe.</p>
-        </section>
+const views = {
+    home: $('#view-home'),
+    category: $('#view-category'),
+    favorites: $('#view-favorites'),
+    search: $('#view-search'),
+};
 
-        <!-- ===== VIEW: HOME ===== -->
-        <div class="view active" id="view-home">
-            <div class="category-grid" id="categoryGrid"></div>
-        </div>
+const categoryGrid = $('#categoryGrid');
+const songGrid = $('#songGrid');
+const favGrid = $('#favGrid');
+const searchGrid = $('#searchGrid');
+const globalSearch = $('#globalSearch');
+const sortSelect = $('#sortSelect');
+const backHomeBtn = $('#backHomeBtn');
+const favCount = $('#favCount');
 
-        <!-- ===== VIEW: CATEGORY ===== -->
-        <div class="view" id="view-category">
-            <div class="category-header" id="categoryHeader">
-                <div class="category-header-left">
-                    <span class="big-emoji" id="catEmoji">💜</span>
-                    <div>
-                        <div class="cat-title" id="catTitle">Love & Romance</div>
-                        <div class="cat-sub" id="catDesc">The best songs for love, romance and everything in between.</div>
-                    </div>
-                </div>
-                <div class="category-controls">
-                    <button class="btn-back" id="backHomeBtn"><i class="fas fa-arrow-left"></i> Back</button>
-                    <select class="sort-select" id="sortSelect">
-                        <option value="rating">⭐ Highest Rated</option>
-                        <option value="recent">🕐 Recently Added</option>
-                        <option value="az">A–Z</option>
-                    </select>
-                </div>
-            </div>
-            <div class="song-grid" id="songGrid"></div>
-        </div>
+const modalOverlay = $('#modalOverlay');
+const modalCloseBtn = $('#modalCloseBtn');
+const modalEmoji = $('#modalEmoji');
+const modalTitle = $('#modalTitle');
+const modalArtist = $('#modalArtist');
+const modalGenre = $('#modalGenre');
+const modalCategories = $('#modalCategories');
+const modalMoods = $('#modalMoods');
+const modalRating = $('#modalRating');
+const modalDate = $('#modalDate');
+const modalNotes = $('#modalNotes');
+const modalFavBtn = $('#modalFavBtn');
 
-        <!-- ===== VIEW: FAVORITES ===== -->
-        <div class="view" id="view-favorites">
-            <div style="padding: 8px 0 20px;">
-                <h2 style="font-size:28px; font-weight:700; letter-spacing:-0.5px;">❤️ Your Favorites</h2>
-                <p style="color:var(--text-secondary);">All the songs you've saved.</p>
-            </div>
-            <div class="song-grid" id="favGrid"></div>
-        </div>
+const catEmoji = $('#catEmoji');
+const catTitle = $('#catTitle');
+const catDesc = $('#catDesc');
 
-        <!-- ===== VIEW: SEARCH RESULTS ===== -->
-        <div class="view" id="view-search">
-            <div style="padding: 8px 0 20px;">
-                <h2 style="font-size:28px; font-weight:700; letter-spacing:-0.5px;">🔍 Search Results</h2>
-                <p style="color:var(--text-secondary);" id="searchResultInfo">0 songs found</p>
-            </div>
-            <div class="song-grid" id="searchGrid"></div>
-        </div>
+const totalCategoriesEl = $('#totalCategories');
+const totalSongsEl = $('#totalSongs');
 
-        <!-- ===== MODAL ===== -->
-        <div class="modal-overlay" id="modalOverlay">
-            <div class="modal" id="modalContent">
-                <button class="modal-close" id="modalCloseBtn">&times;</button>
-                <span class="modal-emoji" id="modalEmoji">🎵</span>
-                <div class="modal-title" id="modalTitle">Song Name</div>
-                <div class="modal-artist" id="modalArtist">Artist</div>
-                <div style="margin-top:16px;">
-                    <div class="modal-detail-row"><span class="modal-label">Genre</span><span class="modal-value" id="modalGenre">—</span></div>
-                    <div class="modal-detail-row"><span class="modal-label">Categories</span><span class="modal-value" id="modalCategories">—</span></div>
-                    <div class="modal-detail-row"><span class="modal-label">Moods</span><span class="modal-value"><span class="modal-moods" id="modalMoods"></span></span></div>
-                    <div class="modal-detail-row"><span class="modal-label">Theme Rating</span><span class="modal-value" id="modalRating">—</span></div>
-                    <div class="modal-detail-row"><span class="modal-label">Date Added</span><span class="modal-value" id="modalDate">—</span></div>
-                </div>
-                <div class="modal-notes" id="modalNotes"><strong>Notes:</strong> No personal notes yet.</div>
-                <button class="modal-fav-btn" id="modalFavBtn"><i class="fas fa-heart"></i> Add to Favorites</button>
-            </div>
-        </div>
+// ============================================================
+//  HELPERS
+// ============================================================
+function getCategoryName(id) {
+    const c = CATEGORIES.find(cat => cat.id === id);
+    return c ? c.name : id;
+}
 
-    </div>
+function getCategoryEmoji(id) {
+    const c = CATEGORIES.find(cat => cat.id === id);
+    return c ? c.emoji : '🎵';
+}
 
-    <script src="script.js"></script>
-</body>
-</html>
+function isFavorite(song) {
+    return favorites.some(f => f.title === song.title && f.artist === song.artist);
+}
+
+function toggleFavorite(song) {
+    const idx = favorites.findIndex(f => f.title === song.title && f.artist === song.artist);
+    if (idx > -1) {
+        favorites.splice(idx, 1);
+    } else {
+        favorites.push({ title: song.title, artist: song.artist });
+    }
+    localStorage.setItem('sonora_favorites', JSON.stringify(favorites));
+    updateFavCount();
+    renderCurrentView();
+    if (modalOverlay.classList.contains('open')) {
+        updateModalFavButton(song);
+    }
+}
+
+function updateFavCount() {
+    favCount.textContent = favorites.length;
+}
+
+// ============================================================
+//  RENDER FUNCTIONS
+// =====
